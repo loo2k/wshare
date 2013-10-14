@@ -162,3 +162,7 @@
 			return this
 		}
 	}(window.jQuery);
+
+	$(function() {
+		$('[data-toggle="WShare"]').WShare();
+	})
