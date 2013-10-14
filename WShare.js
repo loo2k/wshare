@@ -109,8 +109,7 @@
 
 				if( window[targetName] && typeof window[targetName] == 'string' ) {
 					return window[targetName];
-				} else if( targetElem.length > 0 ) {
-					console.log(targetElem.val());
+				} else if( targetElem.length > 0 && targetElem.val().length > 0 ) {
 					return targetElem.val();
 				} else {
 					switch(WSType) {
