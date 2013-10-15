@@ -1,156 +1,156 @@
-	 /* ========================================================================
-		* Bootstrap extend: wshare
-		* http://github.com/loo2k/wshare
-		* ======================================================================== 
-		* Copyright 2013 LOO2K.
-		*
-		* Licensed under the Apache License, Version 2.0 (the "License");
-		* you may not use this file except in compliance with the License.
-		* You may obtain a copy of the License at
-		*
-		* http://www.apache.org/licenses/LICENSE-2.0
-		*
-		* Unless required by applicable law or agreed to in writing, software
-		* distributed under the License is distributed on an "AS IS" BASIS,
-		* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-		* See the License for the specific language governing permissions and
-		* limitations under the License.
-		* ========================================================== */
-	!function($) {
-		"use strict";
+ /* ========================================================================
+	* Bootstrap extend: wshare
+	* http://github.com/loo2k/wshare
+	* ======================================================================== 
+	* Copyright 2013 LOO2K.
+	*
+	* Licensed under the Apache License, Version 2.0 (the "License");
+	* you may not use this file except in compliance with the License.
+	* You may obtain a copy of the License at
+	*
+	* http://www.apache.org/licenses/LICENSE-2.0
+	*
+	* Unless required by applicable law or agreed to in writing, software
+	* distributed under the License is distributed on an "AS IS" BASIS,
+	* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	* See the License for the specific language governing permissions and
+	* limitations under the License.
+	* ========================================================== */
+!function($) {
+	"use strict";
 
-		var wshare = function(element, options) {
-			this.init(element, options)
+	var wshare = function(element, options) {
+		this.init(element, options)
+	}
+
+	wshare.prototype = {
+		constructor : wshare
+
+		, init : function(element, options) {
+			var that = this;
+			this.$element = $(element);
+			this.options = options || {};
 		}
 
-		wshare.prototype = {
-			constructor : wshare
+		, postShare : function(_target) {
+			var type		= this.options.type || $(_target).data('type');
+			var source	= this.options.source || $(_target).data('source');
+			var target	= this.options.target || $(_target).data('target');
 
-			, init : function(element, options) {
-				var that = this;
-				this.$element = $(element);
-				this.options = options || {};
+			var WContent	= this.getShareValue('wsContent');
+			var WUrl			= this.getShareValue('wsUrl');
+			var WPic			= this.getShareValue('wsPic');
+			var shareUrl	= this.generatorShare(type, WContent, WUrl, WPic);
+
+			this.openShareWin(shareUrl, 750, 500);
+		}
+
+		, generatorShare : function(type, content, url, pic) {
+			var generator = {
+				'weibo' : 'http://service.weibo.com/share/share.php?title=%content%&url=%url%&pic=%pic%',
+				'qq' : 'http://share.v.t.qq.com/index.php?c=share&a=index&title=%content%&url=%url%&pic=%pic%'
 			}
 
-			, postShare : function(_target) {
-				var type		= this.options.type || $(_target).data('type');
-				var source	= this.options.source || $(_target).data('source');
-				var target	= this.options.target || $(_target).data('target');
+			var request = generator[type];
+			if(!request) alert('参数非法');
+			
+			request = !!pic ? request.replace(/%pic%/g, pic) : request.slice(0, request.lastIndexOf('&'));
+			request = !!url ? ( request.slice(0, request.indexOf('url=') - 1 ) + request.slice(request.indexOf('%url%') + 5) ) : request.replace(/%url%/g, url);
+			
+			return request.replace(/%content%/g, content);
+		}
 
-				var WContent	= this.getShareValue('wsContent');
-				var WUrl			= this.getShareValue('wsUrl');
-				var WPic			= this.getShareValue('wsPic');
-				var shareUrl	= this.generatorShare(type, WContent, WUrl, WPic);
-
-				this.openShareWin(shareUrl, 750, 500);
-			}
-
-			, generatorShare : function(type, content, url, pic) {
-				var generator = {
-					'weibo' : 'http://service.weibo.com/share/share.php?title=%content%&url=%url%&pic=%pic%',
-					'qq' : 'http://share.v.t.qq.com/index.php?c=share&a=index&title=%content%&url=%url%&pic=%pic%'
-				}
-
-				var request = generator[type];
-				if(!request) alert('参数非法');
-				
-				request = !!pic ? request.replace(/%pic%/g, pic) : request.slice(0, request.lastIndexOf('&'));
-				request = !!url ? ( request.slice(0, request.indexOf('url=') - 1 ) + request.slice(request.indexOf('%url%') + 5) ) : request.replace(/%url%/g, url);
-				
-				return request.replace(/%content%/g, content);
-			}
-
-			, getShareValue : function(wsType) {
-				var $wsType = typeof this.options[wsType];
-				switch($wsType) {
-					case 'function':
-						var funcres = $.proxy(this.options[wsType], this)();
-						if(!funcres) {
-							return funcres;
-						} else {
-							return $.proxy(this.getDefaultValue, this, wsType)();
-						}
-						break;
-					case 'string':
-						return this.options[wsType];
-						break;
-					case 'undefined':
-					default:
+		, getShareValue : function(wsType) {
+			var $wsType = typeof this.options[wsType];
+			switch($wsType) {
+				case 'function':
+					var funcres = $.proxy(this.options[wsType], this)();
+					if(!funcres) {
+						return funcres;
+					} else {
 						return $.proxy(this.getDefaultValue, this, wsType)();
-				}
-			}
-
-			, getDefaultValue : function(wsType) {
-				var element 		= this.$element.context;
-				var target 			= this.options.target || $(element).data('target') || $(element).attr('id');
-				var targetName	= target + '_' + wsType;
-				var targetElem	= $('#' + targetName);
-
-				if( !window[targetName] && targetElem.length == 0) {
-					targetName = wsType;
-					targetElem = $('#' + targetName);
-				}
-
-				if( window[targetName] && typeof window[targetName] == 'string' ) {
-					return window[targetName];
-				} else if( targetElem.length > 0 && targetElem.val().length > 0 ) {
-					return targetElem.val();
-				} else {
-					switch(wsType) {
-						case 'wsContent':
-							return $('title').text();
-							break;
-						case 'wsUrl':
-							return window.location.href;
-							break;
-						case 'wsPic':
-						case 'wsVideo':
-						default:
-							return false;
 					}
+					break;
+				case 'string':
+					return this.options[wsType];
+					break;
+				case 'undefined':
+				default:
+					return $.proxy(this.getDefaultValue, this, wsType)();
+			}
+		}
+
+		, getDefaultValue : function(wsType) {
+			var element 		= this.$element.context;
+			var target 			= this.options.target || $(element).data('target') || $(element).attr('id');
+			var targetName	= target + '_' + wsType;
+			var targetElem	= $('#' + targetName);
+
+			if( !window[targetName] && targetElem.length == 0) {
+				targetName = wsType;
+				targetElem = $('#' + targetName);
+			}
+
+			if( window[targetName] && typeof window[targetName] == 'string' ) {
+				return window[targetName];
+			} else if( targetElem.length > 0 && targetElem.val().length > 0 ) {
+				return targetElem.val();
+			} else {
+				switch(wsType) {
+					case 'wsContent':
+						return $('title').text();
+						break;
+					case 'wsUrl':
+						return window.location.href;
+						break;
+					case 'wsPic':
+					case 'wsVideo':
+					default:
+						return false;
 				}
 			}
-
-			, openShareWin : function(url, width, height) {
-				var winParams = ['toolbar=0,status=0,resizable=1,width=' + width + ',height=' + height + ',left=',(screen.width-width)/2,',top=',(screen.height-height)/2].join('');
-				window.open(url, 'wshare 分享窗口', winParams);
-			}
 		}
 
-	 /* wshare PLUGIN DEFINITION
-		* ========================= */
-
-		var old = $.fn.wshare
-
-		$.fn.wshare = function ( option, _target ) {
-			return this.each(function () {
-				var $this = $(this)
-					, data = $this.data('wshare')
-					, options = typeof option == 'object' && option
-				if (!data) $this.data('wshare', (data = new wshare(this, options)))
-				if (typeof option == 'string') data[option](_target)
-			})
+		, openShareWin : function(url, width, height) {
+			var winParams = ['toolbar=0,status=0,resizable=1,width=' + width + ',height=' + height + ',left=',(screen.width-width)/2,',top=',(screen.height-height)/2].join('');
+			window.open(url, 'wshare 分享窗口', winParams);
 		}
+	}
 
-		$.fn.wshare.Constructor = wshare
+ /* wshare PLUGIN DEFINITION
+	* ========================= */
 
-		$.fn.wshare.defaults = {}
+	var old = $.fn.wshare
+
+	$.fn.wshare = function ( option, _target ) {
+		return this.each(function () {
+			var $this = $(this)
+				, data = $this.data('wshare')
+				, options = typeof option == 'object' && option
+			if (!data) $this.data('wshare', (data = new wshare(this, options)))
+			if (typeof option == 'string') data[option](_target)
+		})
+	}
+
+	$.fn.wshare.Constructor = wshare
+
+	$.fn.wshare.defaults = {}
 
 
-	 /* wshare NO CONFLICT
-		* =================== */
+ /* wshare NO CONFLICT
+	* =================== */
 
-		$.fn.wshare.noConflict = function () {
-			$.fn.wshare = old
-			return this
-		}
-	}(window.jQuery);
+	$.fn.wshare.noConflict = function () {
+		$.fn.wshare = old
+		return this
+	}
+}(window.jQuery);
 
-	/* wshare DATA-API
-		* ========================= */
+/* wshare DATA-API
+	* ========================= */
 
-	$(document).on('click.wshare.data-api', '[data-toggle="wshare"]', function(e) {
-		var $this = $(this);
-		if( !$this.data('wshare') ) $this.wshare();
-		$this.wshare('postShare', this);
-	})
+$(document).on('click.wshare.data-api', '[data-toggle="wshare"]', function(e) {
+	var $this = $(this);
+	if( !$this.data('wshare') ) $this.wshare();
+	$this.wshare('postShare', this);
+})
