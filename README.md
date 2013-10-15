@@ -160,7 +160,3 @@ window['Weibo_wsContent'] = "wshare 是一个简洁轻便的网页分享插件";
 | wsUrl		|String/Function	|false	|此处设置分享链接，优先级最高，如果 function 返回值是 false 则调用默认处理方式 |
 | wsPic		|String/Function	|false	|此处设置分享图片，优先级最高，如果 function 返回值是 false 则调用默认处理方式 |
 | wsVideo	|String/Function	|false	|此处设置分享视频，优先级最高，如果 function 返回值是 false 则调用默认处理方式 |
-
-### 说明
-
-wsVideo 暂时没有支持，后续版本会提供 wsVideo 支持
