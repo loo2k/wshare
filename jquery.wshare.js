@@ -40,24 +40,29 @@
 			var WContent	= this.getShareValue('wsContent');
 			var WUrl			= this.getShareValue('wsUrl');
 			var WPic			= this.getShareValue('wsPic');
-			var shareUrl	= this.generatorShare(type, WContent, WUrl, WPic);
+			var WVideo		= this.getShareValue('wsVideo');
+			var shareUrl	= this.generatorShare(type, WContent, WUrl, WPic, WVideo);
 
 			this.openShareWin(shareUrl, 750, 500);
 		}
 
-		, generatorShare : function(type, content, url, pic) {
+		, generatorShare : function(type, content, url, pic, video) {
+			var requestUrl = url;
+			var contentUrl = '';
 			var generator = {
 				'weibo' : 'http://service.weibo.com/share/share.php?title=%content%&url=%url%&pic=%pic%',
 				'qq' : 'http://share.v.t.qq.com/index.php?c=share&a=index&title=%content%&url=%url%&pic=%pic%'
 			}
-
 			var request = generator[type];
-			if(!request) alert('参数非法');
-			
+			if( !request ) alert('参数非法');
+			if( !!video ) {
+				requestUrl = video;
+				contentUrl = !!url ? ' ' + url : '';
+			}
 			request = !!pic ? request.replace(/%pic%/g, pic) : request.slice(0, request.lastIndexOf('&'));
-			request = !!url ? ( request.slice(0, request.indexOf('url=') - 1 ) + request.slice(request.indexOf('%url%') + 5) ) : request.replace(/%url%/g, url);
-			
-			return request.replace(/%content%/g, content);
+			request = !!requestUrl ? request.replace(/%url%/g, requestUrl) : ( request.slice(0, request.indexOf('url=') - 1 ) + request.slice(request.indexOf('%url%') + 5) );
+			request = request.replace(/%content%/g, content + contentUrl);
+			return request;
 		}
 
 		, getShareValue : function(wsType) {
@@ -134,7 +139,14 @@
 
 	$.fn.wshare.Constructor = wshare
 
-	$.fn.wshare.defaults = {}
+	$.fn.wshare.defaults = {
+		type: 'weibo',
+		target: false,
+		wsContent: false,
+		wsUrl: false,
+		wsPic: false,
+		wsVideo: false
+	}
 
 
  /* wshare NO CONFLICT
