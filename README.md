@@ -110,7 +110,7 @@ $(function() {
 使用 JavaScript 对元素进行绑定：
 
 ```javascript
-<!-- 默认的绑定方法 -->
+// 默认的绑定方法
 $(function() {
 	$('#wshare-demo').wshare();
 })
@@ -118,23 +118,23 @@ $(function() {
 
 这样绑定了的元素也会像 HTML 绑定一样，寻找指定的元素获得需要分享的内容，而且会根据网页中的 ```window``` 对象获得指定的分享内容。
 
-```html
-<!-- 根据绑定元素的 ID 可以指定该 ID 的分享内容，增加 window 子对象 ID_wsContent -->
+```javascript
+// 根据绑定元素的 ID 可以指定该 ID 的分享内容，增加 window 子对象 ID_wsContent
 window['wshare-demo_wsContent'] = 'wshare 是一个简洁轻便的网页分享插件';
 
-<!-- 根据绑定元素的 ID 可以指定该 ID 的分享链接，增加 window 子对象 ID_wsUrl -->
+// 根据绑定元素的 ID 可以指定该 ID 的分享链接，增加 window 子对象 ID_wsUrl
 window['wshare-demo_wsUrl'] = 'http://github.com/loo2k/wshare';
 
-<!-- 图片/视频等同理... -->
+// 图片/视频等同理...
 ```
 
 你也可以用在 ```window``` 对象中设置全局的分享内容
 
 ```javascript
-<!-- 指定全局的分享内容 -->
+// 指定全局的分享内容
 window['wsContent'] = 'wshare 是一个简洁轻便的网页分享插件';
 
-<!-- 链接/图片/视频同理... -->
+// 链接/图片/视频同理...
 ```
 
 你也可以在绑定事件的时候指定 ```target```：
