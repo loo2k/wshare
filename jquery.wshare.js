@@ -59,9 +59,9 @@
 				requestUrl = video;
 				contentUrl = !!url ? ' ' + url : '';
 			}
-			request = !!pic ? request.replace(/%pic%/g, pic) : request.slice(0, request.lastIndexOf('&'));
-			request = !!requestUrl ? request.replace(/%url%/g, requestUrl) : ( request.slice(0, request.indexOf('url=') - 1 ) + request.slice(request.indexOf('%url%') + 5) );
-			request = request.replace(/%content%/g, content + contentUrl);
+			request = !!pic ? request.replace(/%pic%/g, encodeURIComponent(pic)) : request.slice(0, request.lastIndexOf('&'));
+			request = !!requestUrl ? request.replace(/%url%/g, encodeURIComponent(requestUrl)) : ( request.slice(0, request.indexOf('url=') - 1 ) + request.slice(request.indexOf('%url%') + 5) );
+			request = request.replace(/%content%/g, encodeURIComponent(content + contentUrl));
 			return request;
 		}
 
