@@ -117,8 +117,21 @@
 		}
 
 		, openShareWin : function(url, width, height) {
-			var winParams = ['toolbar=0,status=0,resizable=1,width=' + width + ',height=' + height + ',left=',(screen.width-width)/2,',top=',(screen.height-height)/2].join('');
-			window.open(url, 'wshare 分享窗口', winParams);
+			var name = "分享项目";
+			var iWidth = width;
+			var iHeight = height;
+			var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+			var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+			var iParams = ['height='
+				, iHeight
+				, ',width='
+				, iWidth
+				, ',top='
+				, iTop
+				, ',left='
+				, iLeft
+				, ',toolbar=no,menubar=no,scrollbars=auto,resizeable=no,location=no,status=no'].join('');
+			window.open(url, name, iParams);
 		}
 	}
 
