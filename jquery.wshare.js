@@ -51,7 +51,9 @@
 			var contentUrl = '';
 			var generator = {
 				'weibo' : 'http://service.weibo.com/share/share.php?title=%content%&url=%url%&pic=%pic%',
-				'qq' : 'http://share.v.t.qq.com/index.php?c=share&a=index&title=%content%&url=%url%&pic=%pic%'
+				'qq' : 'http://share.v.t.qq.com/index.php?c=share&a=index&title=%content%&url=%url%&pic=%pic%',
+				'renren' : 'http://widget.renren.com/dialog/share?charset=UTF-8&resourceUrl=%url%&title=%content%&description=%content%&pic=%pic%',
+				'qzone' : 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=%url%&title=%content%&summary=%content%&pics=%pic%'
 			}
 			var request = generator[type];
 			if( !request ) alert('参数非法');
